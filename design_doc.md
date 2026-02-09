@@ -10,7 +10,11 @@ Students authenticate using their official university email addresses, ensuring 
 
 ## 2. Problem Statement
 
-NEED A BETTER PROBLEM STATEMENT
+College students lack a dedicated university platform designed specifically for academic collaboration within their own campus community. While students often rely on general social media platforms, group chats, or external forums, these tools are not built for structured academic interaction and are primarily designed for entertainment rather than learning.
+
+As a result, meaningful academic discussion is fragmented across multiple platforms, making it difficult for students to ask course specific questions, share resources, and connect with peers in a focused and reliable environment. Additionally, many students hesitate to participate in classroom discussions or public forums due to fear of judgment, lack of anonymity, or the absence of a trusted academic space.
+
+Agora addresses this problem by providing a centralized, university only platform where verified students can connect, collaborate, and engage in course scoped academic discussions. The system enables students to ask and answer questions, share notes and educational resources, and interact with peers through structured features such as courses, tagging, upvotes, and accepted answers. Optional anonymity further encourages open participation while maintaining a secure, institution specific environment.
 
 ---
 
