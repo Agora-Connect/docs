@@ -100,32 +100,300 @@ Repositories communicate via REST APIs, enabling modular development while funct
 ---
 
 ## 5. Database Design Overview
+### 5.1 Design Goals
 
-### 5.1 Key Entities
+The database for Agora is designed to support academic collaboration platform that enables structured, course specific interaction among students. The primary goals of the database design are:
 
-* **User** (user_id, email, name, reputation, role)
-* **Course** (course_id, course_code, title)
-* **Enrollment** (user_id, course_id)
-* **Post** (post_id, user_id, course_id, content, is_anonymous)
-* **Problem** (problem_id, user_id, course_id, title, description)
-* **Answer** (answer_id, problem_id, user_id, content, is_accepted)
-* **Comment** (comment_id, user_id, post_id/answer_id)
-* **Tag** (tag_id, name)
-* **PostTag** (post_id, tag_id)
-* **Follow** (follower_id, following_id)
-* **Vote** (user_id, target_id, vote_type)
-* **Resource** (resource_id, owner_id, type, status)
-* **BorrowRequest** (request_id, resource_id, requester_id, status)
+* To ensure data integrity and consistency across academic content and user interactions
 
-### 5.2 Relationships & Constraints
+* To support scalable and efficient querying for feeds, course discussions, and Q&A
 
-* One user can enroll in many courses (M:N)
-* One problem can have many answers, but only one accepted answer
-* Posts belong to either a course or the university feed
-* Many-to-many relationships for tags, follows, and bookmarks
+* To model realistic academic relationships such as course enrollment, question–answer flows, and peer interaction
 
-The schema is normalized to **Third Normal Form (3NF)** to eliminate redundancy.
+* To enforce clear business rules (e.g., one accepted answer per problem, one enrollment per course per student)
 
+* To maintain a normalized relational structure (3NF/BCNF) while allowing flexibility through a small NoSQL component
+
+* The database is implemented primarily using a relational model (MySQL), complemented by a MongoDB collection for flexible activity logging and analytics.
+
+### 5.2 Core Entities and Their Responsibilities
+
+The database consists of several core entities that represent users, academic structure, content, and interactions.
+
+#### User
+
+* The User entity represents a verified university student.
+
+* Each user registers using a university-issued email address
+
+* Stores profile level information (name, university, reputation score)
+
+#### Users can:
+
+* Enroll in courses
+
+* Create posts and problems
+
+* Submit answers and comments
+
+* Follow other users
+
+* Upvote content
+
+* Borrow or lend notes/books
+
+* Each user is uniquely identified by a user_id primary key.
+
+#### Course
+
+* The Course entity models university courses (e.g., CSCI 411, MATH 221).
+
+* Courses provide academic scoping for content
+
+* All posts, problems, and shared resources are associated with a course
+
+* Supports filtering feeds and questions by course
+
+#### This entity enables realistic academic queries such as:
+
+* “Most active courses”
+
+* “Questions posted per course”
+
+* “Top contributors in a course”
+
+#### Enrollment
+
+* Enrollment is an associative (junction) entity between User and Course.
+
+* Represents which users are enrolled in which courses
+
+#### Enforces the rule that:
+
+* A user can enroll in many courses
+
+* A course can have many users
+
+* A user can enroll in a given course only once
+
+#### This table is critical for:
+
+* Course specific feeds
+
+* Access control (only enrolled students can post in a course)
+
+* Academic analytics
+
+### 5.3 Content Modeling
+
+Agora supports multiple types of academic content. These are modeled with clear ownership and constraints.
+
+#### Post
+
+The Post entity represents general educational posts (announcements, explanations, shared resources).
+
+#### Each post:
+
+* Is created by a single user
+
+* Belongs to exactly one course
+
+* Can be anonymous or public
+
+* Supports comments, upvotes, and tagging
+
+#### Posts appear in:
+
+* Course feeds
+
+* User following feeds
+
+* Global university feed
+
+#### Problem
+
+The Problem entity represents academic questions.
+
+Problems are:
+
+* Created by users
+
+* Scoped to a specific course
+
+* Designed to receive multiple answers
+
+* Each problem can have exactly one accepted answer
+
+* This structure mirrors real academic Q&A platforms and enables strong business rules.
+
+The Answer entity represents responses to problems.
+
+Each answer:
+
+* Belongs to exactly one problem
+
+* Is authored by one user
+
+A constraint ensures:
+
+* Only one answer per problem can be marked as accepted = TRUE
+
+This allows queries such as:
+
+* “Problems without accepted answers”
+
+* “Users with most accepted answers”
+
+The Comment entity supports discussion on posts, problems, and answers.
+
+A comment:
+
+* Belongs to one content item
+
+* Is authored by one user
+
+* Designed using a polymorphic relationship (via content ID + content type)
+
+### 5.4 Interaction & Social Relationships
+
+The Follow entity models user to user relationships.
+
+Allows students to follow peers
+
+Supports:
+
+* Personalized feeds
+
+* Academic networking
+
+* This is a self referential relationship on the User entity.
+
+Upvote
+
+The Upvote entity tracks user engagement.
+
+Users can upvote:
+
+* Posts
+
+* Problems
+
+* Answers
+
+Enforces:
+
+* One upvote per user per content item
+
+* Upvotes directly contribute to:
+
+* Content ranking
+
+* User reputation score
+
+### 5.5 Resource Sharing (Books & Notes)
+
+The Resource entity represents shared academic materials such as:
+
+* Textbooks
+
+* Lecture notes
+
+* Study guides
+
+Resources:
+
+* Are linked to a course
+
+* Can be offered for borrowing or lending
+
+* Are not assignments or syllabi (enforced by design rules)
+
+
+The BorrowRequest entity tracks borrowing interactions.
+
+A request includes:
+
+* Requesting user
+
+* Owning user
+
+* Resource
+
+* Status (pending, approved, returned)
+
+This entity enables transaction based workflows and realistic academic sharing.
+
+### 5.6 Tagging and Classification
+
+* The Tag entity supports content organization.
+
+* Tags (e.g., #midterm, #homework) are reusable
+
+* Implemented as a many-to-many relationship with posts and problems
+
+This enables:
+
+* Efficient filtering
+
+* Aggregate analytics (most-used tags)
+
+* Advanced JOIN queries
+
+### 5.7 Business Rules and Constraints
+
+The database enforces several key business rules:
+
+* A user may submit only one answer per problem
+
+* A problem may have only one accepted answer
+
+* A user may enroll in a course only once
+
+* A user may upvote a content item only once
+
+* Only enrolled users may post within a course
+
+* Anonymous posts still retain internal user ownership
+
+These rules are enforced through:
+
+* Primary and foreign keys
+
+* UNIQUE constraints
+
+* CHECK constraints
+
+* Transaction logic
+
+### 5.8 NoSQL Component
+
+A MongoDB collection is used to store user activity logs, such as:
+
+* Page views
+
+* Feed interactions
+
+* Search activity
+
+This component:
+
+* Demonstrates schema flexibility
+
+* Supports future recommendation features
+
+* Complements the relational database without duplicating core data
+
+### 5.9 Normalization Summary
+
+All relational tables are normalized to Third Normal Form (3NF) or BCNF, ensuring:
+
+* No partial dependencies
+
+* No transitive dependencies
+
+* Minimal redundancy
+
+* High data integrity
 ---
 
 ## 6. Query & Transaction Support
