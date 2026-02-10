@@ -1,0 +1,223 @@
+// Agora - Academic Collaboration Platform
+// Entity-Relationship Diagram
+// Database: MySQL
+
+// Core User and Academic Structure
+
+Table User {
+  user_id int [pk, increment]
+  email varchar(255) [unique, not null]
+  name varchar(255) [not null]
+  university varchar(255) [not null]
+  reputation_score int [default: 0]
+  created_at timestamp [default: `now()`]
+
+  Note: 'Represents verified university students'
+}
+
+Table Course {
+  course_id int [pk, increment]
+  code varchar(50) [not null]
+  name varchar(255) [not null]
+  description text
+  created_at timestamp [default: `now()`]
+
+  Note: 'University courses (e.g., CSCI 411, MATH 221)'
+}
+
+Table Enrollment {
+  enrollment_id int [pk, increment]
+  user_id int [not null, ref: > User.user_id]
+  course_id int [not null, ref: > Course.course_id]
+  enrolled_at timestamp [default: `now()`]
+
+  indexes {
+    (user_id, course_id) [unique]
+  }
+
+  Note: 'Junction table: Many-to-many relationship between User and Course'
+}
+
+// Content Entities
+
+Table Post {
+  post_id int [pk, increment]
+  user_id int [not null, ref: > User.user_id]
+  course_id int [not null, ref: > Course.course_id]
+  content text [not null]
+  is_anonymous boolean [default: false]
+  created_at timestamp [default: `now()`]
+
+  Note: 'General educational posts with optional anonymity'
+}
+
+Table Problem {
+  problem_id int [pk, increment]
+  user_id int [not null, ref: > User.user_id]
+  course_id int [not null, ref: > Course.course_id]
+  title varchar(255) [not null]
+  description text [not null]
+  created_at timestamp [default: `now()`]
+
+  Note: 'Academic questions in Q&A forum'
+}
+
+Table Answer {
+  answer_id int [pk, increment]
+  problem_id int [not null, ref: > Problem.problem_id]
+  user_id int [not null, ref: > User.user_id]
+  content text [not null]
+  is_accepted boolean [default: false]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (problem_id, user_id) [unique]
+  }
+
+  Note: 'Responses to problems. One answer per user per problem. Only one accepted answer per problem.'
+}
+
+// Comment Entities (Separate tables for each content type)
+
+Table CommentOnPost {
+  comment_id int [pk, increment]
+  post_id int [not null, ref: > Post.post_id]
+  user_id int [not null, ref: > User.user_id]
+  content text [not null]
+  created_at timestamp [default: `now()`]
+
+  Note: 'Comments on posts'
+}
+
+Table CommentOnProblem {
+  comment_id int [pk, increment]
+  problem_id int [not null, ref: > Problem.problem_id]
+  user_id int [not null, ref: > User.user_id]
+  content text [not null]
+  created_at timestamp [default: `now()`]
+
+  Note: 'Comments on problems'
+}
+
+Table CommentOnAnswer {
+  comment_id int [pk, increment]
+  answer_id int [not null, ref: > Answer.answer_id]
+  user_id int [not null, ref: > User.user_id]
+  content text [not null]
+  created_at timestamp [default: `now()`]
+
+  Note: 'Comments on answers'
+}
+
+// Upvote Entities (Separate tables for each content type)
+
+Table UpvoteOnPost {
+  upvote_id int [pk, increment]
+  post_id int [not null, ref: > Post.post_id]
+  user_id int [not null, ref: > User.user_id]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (post_id, user_id) [unique]
+  }
+
+  Note: 'One upvote per user per post'
+}
+
+Table UpvoteOnProblem {
+  upvote_id int [pk, increment]
+  problem_id int [not null, ref: > Problem.problem_id]
+  user_id int [not null, ref: > User.user_id]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (problem_id, user_id) [unique]
+  }
+
+  Note: 'One upvote per user per problem'
+}
+
+Table UpvoteOnAnswer {
+  upvote_id int [pk, increment]
+  answer_id int [not null, ref: > Answer.answer_id]
+  user_id int [not null, ref: > User.user_id]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (answer_id, user_id) [unique]
+  }
+
+  Note: 'One upvote per user per answer'
+}
+
+// Social Interaction
+
+Table Follow {
+  follow_id int [pk, increment]
+  follower_id int [not null, ref: > User.user_id]
+  followed_id int [not null, ref: > User.user_id]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (follower_id, followed_id) [unique]
+  }
+
+  Note: 'Self-referential relationship on User. Enables following feed.'
+}
+
+// Tagging System
+
+Table Tag {
+  tag_id int [pk, increment]
+  name varchar(100) [unique, not null]
+
+  Note: 'Reusable tags (e.g., #databases, #midterm)'
+}
+
+Table PostTag {
+  post_id int [not null, ref: > Post.post_id]
+  tag_id int [not null, ref: > Tag.tag_id]
+
+  indexes {
+    (post_id, tag_id) [pk]
+  }
+
+  Note: 'Junction table: Many-to-many relationship between Post and Tag'
+}
+
+Table ProblemTag {
+  problem_id int [not null, ref: > Problem.problem_id]
+  tag_id int [not null, ref: > Tag.tag_id]
+
+  indexes {
+    (problem_id, tag_id) [pk]
+  }
+
+  Note: 'Junction table: Many-to-many relationship between Problem and Tag'
+}
+
+// Resource Sharing
+
+Table Resource {
+  resource_id int [pk, increment]
+  user_id int [not null, ref: > User.user_id]
+  course_id int [not null, ref: > Course.course_id]
+  title varchar(255) [not null]
+  type varchar(50) [not null]
+  file_path varchar(500)
+  created_at timestamp [default: `now()`]
+
+  Note: 'Shared academic materials (textbooks, notes, study guides)'
+}
+
+Table BorrowRequest {
+  request_id int [pk, increment]
+  resource_id int [not null, ref: > Resource.resource_id]
+  requester_id int [not null, ref: > User.user_id]
+  owner_id int [not null, ref: > User.user_id]
+  status varchar(50) [not null, default: 'pending']
+  requested_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  Note: 'Borrow/lend workflow with status tracking (pending, approved, returned)'
+}
