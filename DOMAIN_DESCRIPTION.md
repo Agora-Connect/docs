@@ -2,9 +2,9 @@
 
 ## 1. Domain Overview
 
-Agora is an academic collaboration platform designed exclusively for verified university students within their campus community. The platform provides a structured, university-only environment where students can engage in course-scoped academic discussions, ask and answer questions, share educational resources, and connect with peers for academic support.
+Agora is an academic collaboration platform designed exclusively for verified university students within their campus community. The platform provides a structured, university only environment where students can engage in course scoped academic discussions, ask and answer questions, share educational resources, and connect with peers for academic support.
 
-Unlike general-purpose social media platforms designed primarily for entertainment, Agora focuses on fostering meaningful academic interaction through features such as course enrollment, question-and-answer forums, reputation systems, resource sharing, and content tagging. The platform enforces university email authentication to ensure all participants are verified members of the institution, creating a trusted academic space.
+Unlike general purpose social media platforms designed primarily for entertainment, Agora focuses on fostering meaningful academic interaction through features such as course enrollment, question-and-answer forums, reputation systems, resource sharing, and content tagging. The platform enforces university email authentication to ensure all participants are verified members of the institution, creating a trusted academic space.
 
 The domain encompasses the complete lifecycle of academic collaboration: user registration and authentication, course enrollment, content creation and engagement (posts, problems, answers, comments), social interaction (following, upvoting), resource sharing (textbooks, notes), and content organization through tagging systems.
 
@@ -14,9 +14,9 @@ The domain encompasses the complete lifecycle of academic collaboration: user re
 
 College students lack a dedicated university platform designed specifically for academic collaboration within their own campus community. While students often rely on general social media platforms, group chats, or external forums, these tools are not built for structured academic interaction and are primarily designed for entertainment rather than learning.
 
-As a result, meaningful academic discussion is fragmented across multiple platforms, making it difficult for students to ask course-specific questions, share resources, and connect with peers in a focused and reliable environment. Additionally, many students hesitate to participate in classroom discussions or public forums due to fear of judgment, lack of anonymity, or the absence of a trusted academic space.
+As a result, meaningful academic discussion is fragmented across multiple platforms, making it difficult for students to ask course specific questions, share resources, and connect with peers in a focused and reliable environment. Additionally, many students hesitate to participate in classroom discussions or public forums due to fear of judgment, lack of anonymity, or the absence of a trusted academic space.
 
-Agora addresses this problem by providing a centralized, university-only platform where verified students can connect, collaborate, and engage in course-scoped academic discussions. The system enables students to ask and answer questions, share notes and educational resources, and interact with peers through structured features such as courses, tagging, upvotes, and accepted answers. Optional anonymity further encourages open participation while maintaining a secure, institution-specific environment.
+Agora addresses this problem by providing a centralized, university only platform where verified students can connect, collaborate, and engage in course-scoped academic discussions. The system enables students to ask and answer questions, share notes and educational resources, and interact with peers through structured features such as courses, tagging, upvotes, and accepted answers. Optional anonymity further encourages open participation while maintaining a secure, institution specific environment.
 
 ---
 
