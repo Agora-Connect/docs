@@ -19,7 +19,7 @@ Design documents, ER diagrams, and database theory documentation for the Agora a
 
 Agora is a campus-exclusive academic collaboration platform for verified SCSU students (`@stcloudstate.edu`). It provides course-scoped Q&A, resource sharing, study groups, and a social feed — all backed by a MySQL database designed from scratch by the team.
 
-**Live application:** [Agora on Railway](https://web-production-48b9b.up.railway.app)
+**Live application:** [Agora on AWS](http://ec2-52-53-163-82.us-west-1.compute.amazonaws.com)
 
 ---
 
